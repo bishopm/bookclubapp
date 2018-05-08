@@ -1,0 +1,42 @@
+{
+  "name": "bookpwa",
+  "version": "1.0.0",
+  "description": "Ballito Bookclub App",
+  "productName": "Ballito Bookclub",
+  "cordovaId": "org.cordova.quasar.app",
+  "author": "Michael Bishop <michael@goodworx.co.za>",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .js,.vue src",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "hellojs": "^1.16.1",
+    "vue-hellojs": "0.0.4",
+    "vue-multiselect": "^2.1.0",
+    "vue-save-state": "^1.2.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.18.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-vue": "^4.3.0",
+    "quasar-cli": "^0.15.14"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ]
+}

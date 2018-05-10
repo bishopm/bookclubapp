@@ -24,7 +24,7 @@ export default {
       this.profile = this.$store.state.profile
       this.authorised = this.$store.state.profile.authorised
       if (!this.authorised) {
-        this.$axios.get('http://localhost/bookclub/public/users/' + this.$store.state.profile.id)
+        this.$axios.get('https://bishop.net.za/bookclub/api/public/users/' + this.$store.state.profile.id)
           .then((response) => {
             if (response.data.authorised === 1) {
               this.authorised = 1

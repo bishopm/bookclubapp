@@ -23,7 +23,7 @@ export default {
     if (!localStorage.getItem('BC_Books')) {
       this.$q.loading.show()
     }
-    this.$axios.get('http://localhost/bookclub/public/books/alltags')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
       .then((response) => {
         this.genres = response.data
         this.$q.loading.hide()

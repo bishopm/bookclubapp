@@ -14,6 +14,7 @@ export default [
       { name: 'genre', path: '/genre/:tag', component: () => import('components/Genre') },
       { name: 'genres', path: '/genres', component: () => import('components/Genres') },
       { name: 'login', path: '/login', component: () => import('components/Login') },
+      { name: 'logincallback', path: '/login/callback', component: () => import('components/Login') },
       { name: 'user', path: '/users/:id', component: () => import('components/User') },
       { name: 'users', path: '/users', component: () => import('components/Users') }
     ]

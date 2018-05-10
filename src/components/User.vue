@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     refreshdata () {
-      this.$axios.get('http://localhost/bookclub/public/users/' + this.$route.params.id)
+      this.$axios.get('https://bishop.net.za/bookclub/api/public/users/' + this.$route.params.id)
         .then((response) => {
           this.user = response.data
         })
@@ -35,7 +35,7 @@ export default {
         })
     },
     updateuser (action) {
-      this.$axios.post('http://localhost/bookclub/public/users/authorise/' + this.user.id,
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/users/authorise/' + this.user.id,
         {
           action: action
         })

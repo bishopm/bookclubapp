@@ -43,7 +43,7 @@ export default {
     if (!localStorage.getItem('BC_Authors')) {
       this.$q.loading.show()
     }
-    this.$axios.get('http://localhost/bookclub/public/books/' + this.$route.params.id)
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id)
       .then((response) => {
         this.book = response.data
         for (var ukey in this.book.tags) {
@@ -57,7 +57,7 @@ export default {
       .catch(function (error) {
         console.log(error)
       })
-    this.$axios.get('http://localhost/bookclub/public/authors')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -72,7 +72,7 @@ export default {
         console.log(error)
         this.$q.loading.hide()
       })
-    this.$axios.get('http://localhost/bookclub/public/books/alltags')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -90,7 +90,7 @@ export default {
   },
   methods: {
     updateBook () {
-      this.$axios.post('http://localhost/bookclub/public/books/update/' + this.book.id,
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/update/' + this.book.id,
         {
           title: this.book.title,
           author_id: this.book.author_id,

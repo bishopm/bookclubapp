@@ -28,7 +28,7 @@ export default {
       }
     },
     searchdb () {
-      this.$axios.post('http://localhost/bookclub/public/authors/search',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/authors/search',
         {
           search: this.search
         })
@@ -45,7 +45,7 @@ export default {
     if (!localStorage.getItem('BC_Authors')) {
       this.$q.loading.show()
     }
-    this.$axios.get('http://localhost/bookclub/public/authors')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
       .then((response) => {
         this.authors = response.data
         this.$q.loading.hide()

@@ -38,7 +38,7 @@ export default {
             this.profile.image = json['image']['url']
             this.profile.provider_id = json['id']
             this.profile.provider = network
-            this.$axios.post('http://localhost/bookclub/public/login',
+            this.$axios.post('https://bishop.net.za/bookclub/api/public/login',
               {
                 name: this.profile.name,
                 provider_id: this.profile.provider_id,

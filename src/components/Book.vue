@@ -55,7 +55,7 @@ export default {
   props: ['token'],
   methods: {
     addComment () {
-      this.$axios.post('http://localhost/bookclub/public/books/addcomment',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/addcomment',
         {
           user_id: this.profile.id,
           book_id: this.book.id,
@@ -71,7 +71,7 @@ export default {
         })
     },
     deletecomment (id) {
-      this.$axios.post('http://localhost/bookclub/public/books/deletecomment/' + id)
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/deletecomment/' + id)
         .then((response) => {
           this.refreshdata()
         })
@@ -80,7 +80,7 @@ export default {
         })
     },
     borrow () {
-      this.$axios.post('http://localhost/bookclub/public/loans/add',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/add',
         {
           loandate: this.today,
           user_id: this.profile.id,
@@ -97,7 +97,7 @@ export default {
       this.$router.push({ name: 'editbook', params: {id: this.book.id} })
     },
     returnbook () {
-      this.$axios.post('http://localhost/bookclub/public/loans/update',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/update',
         {
           returndate: this.today,
           id: this.book.status.id
@@ -112,7 +112,7 @@ export default {
     refreshdata () {
       this.today = new Date().toISOString().substr(0, 10)
       this.profile = this.$store.state.profile
-      this.$axios.get('http://localhost/bookclub/public/books/' + this.$route.params.id + '/' + this.profile.id)
+      this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id + '/' + this.profile.id)
         .then((response) => {
           this.book = response.data
           this.comments = this.book.comments

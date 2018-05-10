@@ -42,7 +42,7 @@ export default {
       this.$router.push({name: 'addbook'})
     },
     searchdb () {
-      this.$axios.post('http://localhost/bookclub/public/books/search',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/search',
         {
           search: this.search
         })

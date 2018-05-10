@@ -20,6 +20,7 @@ module.exports = function (ctx) {
       remove: []
     },
     build: {
+      publicPath: '/bookclub/',
       scopeHoisting: true,
       vueRouterMode: 'history',
       // gzip: true,

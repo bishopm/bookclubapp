@@ -27,7 +27,7 @@ export default {
   props: ['token'],
   methods: {
     refreshdata () {
-      this.$axios.get('http://localhost/bookclub/public/authors/' + this.$route.params.id)
+      this.$axios.get('https://bishop.net.za/bookclub/api/public/authors/' + this.$route.params.id)
         .then((response) => {
           this.author = response.data
         })

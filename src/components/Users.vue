@@ -36,7 +36,7 @@ export default {
     if (!localStorage.getItem('BC_Users')) {
       this.$q.loading.show()
     }
-    this.$axios.get('http://localhost/bookclub/public/users')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/users')
       .then((response) => {
         this.users = response.data
         this.$q.loading.hide()

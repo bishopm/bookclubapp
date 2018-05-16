@@ -1,11 +1,13 @@
 <template>
   <div>
     <q-list class="no-border">
-      <p class="caption text-center">All genres</p>
-      <q-item v-if="genres" v-for="genre in genres" :key="genre.slug" :to="'/genre/' + genre.slug">
+      <p class="caption text-center">All comments</p>
+      <q-item v-if="comments" v-for="comment in comments" :key="comment.id" :to="'/books/' + comment.commentable.id">
         <q-item-main>
-          {{genre.name}} ({{genre.count}})
+          <b>{{comment.commented.name}}</b> commented on <i>{{comment.commentable.title}}</i> on {{comment.created_at.slice(0,10)}}
         </q-item-main>
+        <q-item-side class="text-right">
+        </q-item-side>
       </q-item>
     </q-list>
   </div>
@@ -16,25 +18,26 @@ import saveState from 'vue-save-state'
 export default {
   data () {
     return {
-      genres: []
+      comments: [],
+      search: ''
     }
   },
   mixins: [saveState],
   methods: {
     getSaveStateConfig () {
       return {
-        'cacheKey': 'BC_Genres'
+        'cacheKey': 'BC_Comments'
       }
     }
   },
   mounted () {
-    if (!localStorage.getItem('BC_Genres')) {
+    if (!localStorage.getItem('BC_Comments')) {
       this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
-      .then((response) => {
-        this.genres = response.data
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/comments')
+      .then(response => {
+        this.comments = response.data
         this.$q.loading.hide()
       })
       .catch(function (error) {

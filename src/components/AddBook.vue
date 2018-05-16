@@ -1,6 +1,15 @@
 <template>
   <div class="layout-padding">
     <p class="q-title text-center">Add a new book</p>
+    <div class="text-center q-pa-sm">
+      <q-btn color="primary" @click="scanCode()" label="Scan barcode" />
+    </div>
+    <div class="text-center q-pa-sm">
+      <img :src="book.image">
+    </div>
+    <div class="q-pa-sm">
+      <q-input name="isbn" v-model="book.isbn" type="text" float-label="ISBN / barcode" />
+    </div>
     <div class="q-pa-sm">
       <q-input name="title" v-model="book.title" @keyup="checkReq" type="text" float-label="Title" />
     </div>
@@ -36,13 +45,19 @@ export default {
       btn_msg: 'Title and author are compulsory fields'
     }
   },
-  props: ['token'],
-  components: { Multiselect },
+  components: {
+    Multiselect
+  },
   mounted () {
+    if (this.$route.params) {
+      this.book.isbn = this.$route.params.isbn
+      this.isbnAdded()
+    }
     if (!localStorage.getItem('BC_Authors')) {
       this.$q.loading.show()
     }
-    this.$axios.get('http://localhost/bookclub/public/authors')
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -57,7 +72,7 @@ export default {
         console.log(error)
         this.$q.loading.hide()
       })
-    this.$axios.get('http://localhost/bookclub/public/books/alltags')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -75,7 +90,9 @@ export default {
   },
   methods: {
     addBook () {
-      this.$axios.post('http://localhost/bookclub/public/books/add',
+      this.$q.loading.show()
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/add',
         {
           title: this.book.title,
           author_id: this.book.author_id,
@@ -84,10 +101,13 @@ export default {
           genres: this.book.genres
         })
         .then(response => {
+          this.$q.loading.hide()
+          this.$q.notify('Book has been added')
           this.$router.push('books')
         })
         .catch(function (error) {
           console.log(error)
+          this.$q.loading.hide()
         })
     },
     checkReq () {
@@ -106,6 +126,22 @@ export default {
       }
       this.genreOptions.push(tag)
       this.book.genres.push(tag)
+    },
+    scanCode () {
+      this.$router.push({name: 'scanner'})
+    },
+    isbnAdded () {
+      delete this.$axios.defaults.headers.common['Authorization']
+      this.$axios.get('https://www.googleapis.com/books/v1/volumes?q=' + this.book.isbn + ':isbn&key=AIzaSyB48VtblZEfmSsE8l1ASs1yzs-mOFOhyI8')
+        .then(response => {
+          this.book.title = response.data.items[0].volumeInfo.title
+          this.book.author = response.data.items[0].volumeInfo.authors
+          this.book.description = response.data.items[0].volumeInfo.description
+          this.book.image = response.data.items[0].volumeInfo.imageLinks.thumbnail
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   }
 }

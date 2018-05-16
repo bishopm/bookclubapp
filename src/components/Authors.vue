@@ -2,11 +2,13 @@
   <q-list>
     <p class="caption text-center">All authors</p>
     <q-search class="q-ml-md" @input="searchdb" v-model="search" placeholder="search by author" />
-    <q-item v-if="authors" v-for="author in authors" :key="author.id" :to="'/authors/' + author.id">
-      <q-item-main>
-        {{author.author}} ({{author.books.length}})
-      </q-item-main>
-    </q-item>
+    <div v-if="authors">
+      <q-item v-if="author.books.length" v-for="author in authors" :key="author.id" :to="'/authors/' + author.id">
+        <q-item-main>
+          {{author.author}} ({{author.books.length}})
+        </q-item-main>
+      </q-item>
+    </div>
   </q-list>
 </template>
 
@@ -19,7 +21,6 @@ export default {
       search: ''
     }
   },
-  props: ['token'],
   mixins: [saveState],
   methods: {
     getSaveStateConfig () {
@@ -28,7 +29,8 @@ export default {
       }
     },
     searchdb () {
-      this.$axios.post('http://localhost/bookclub/public/authors/search',
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/authors/search',
         {
           search: this.search
         })
@@ -45,7 +47,8 @@ export default {
     if (!localStorage.getItem('BC_Authors')) {
       this.$q.loading.show()
     }
-    this.$axios.get('http://localhost/bookclub/public/authors')
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
       .then((response) => {
         this.authors = response.data
         this.$q.loading.hide()

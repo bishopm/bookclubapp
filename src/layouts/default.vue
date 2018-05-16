@@ -50,6 +50,9 @@
     </q-page-container>
     <q-layout-footer>
       <q-toolbar>
+        <q-item>
+          <router-link :to="{ name: 'home' }"><q-item-side style="text-decoration:none;" icon="home" color="white"/></router-link>
+        </q-item>
         <q-item to="/authors">
           <q-item-side icon="person_outline" color="white"/>
         </q-item>
@@ -61,9 +64,6 @@
         </q-item>
         <q-item to="/users">
           <q-item-side icon="people" color="white"/>
-        </q-item>
-        <q-item to="/login">
-          <q-item-side icon="lock_open" color="white"/>
         </q-item>
       </q-toolbar>
     </q-layout-footer>
@@ -82,4 +82,7 @@ export default {
 </script>
 
 <style>
+a, a:hover {
+  text-decoration: none;
+}
 </style>

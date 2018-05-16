@@ -4,7 +4,7 @@
     <div class="q-pa-sm">
       <q-input name="title" v-model="book.title" @keyup="checkReq" type="text" float-label="Title" />
     </div>
-    <div class="q-pa-sm" v-if="authors">
+    <div class="q-pa-sm" v-if="authors && book.author_id">
       <q-select name="author_id" filter @blur="checkReq" filter-placeholder="Search..." float-label="Author" autofocus-filter v-model="book.author_id" :options="selectOptions" />
     </div>
     <div class="q-pa-sm" v-if="book.author_id==-1">
@@ -18,7 +18,8 @@
       <multiselect v-model="genres" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="name" track-by="code" :options="genreOptions" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
     </div>
     <div class="text-center q-pa-sm">
-      <q-btn :disable="btn_disabled" color="primary" @click="updateBook()" :label="btn_msg" />
+      <q-btn :disable="btn_disabled" color="primary" @click="updateBook('update')" :label="btn_msg" />
+      <q-btn :disable="btn_disabled" color="red" @click="confirmDelete" label="Delete this book" />
     </div>
   </div>
 </template>
@@ -43,7 +44,8 @@ export default {
     if (!localStorage.getItem('BC_Authors')) {
       this.$q.loading.show()
     }
-    this.$axios.get('http://localhost/bookclub/public/books/' + this.$route.params.id)
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id)
       .then((response) => {
         this.book = response.data
         for (var ukey in this.book.tags) {
@@ -57,7 +59,8 @@ export default {
       .catch(function (error) {
         console.log(error)
       })
-    this.$axios.get('http://localhost/bookclub/public/authors')
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -72,7 +75,8 @@ export default {
         console.log(error)
         this.$q.loading.hide()
       })
-    this.$axios.get('http://localhost/bookclub/public/books/alltags')
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -89,8 +93,21 @@ export default {
       })
   },
   methods: {
-    updateBook () {
-      this.$axios.post('http://localhost/bookclub/public/books/update/' + this.book.id,
+    confirmDelete () {
+      this.$q.dialog({
+        title: 'Delete a book',
+        message: 'Are you sure you want to delete this book?',
+        ok: 'Yes, delete',
+        cancel: 'Cancel'
+      }).then(() => {
+        this.updateBook('delete')
+      }).catch(() => {
+        this.$q.notify('Deletion cancelled')
+      })
+    },
+    updateBook (action) {
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/' + action + '/' + this.book.id,
         {
           title: this.book.title,
           author_id: this.book.author_id,
@@ -99,7 +116,13 @@ export default {
           genres: this.genres
         })
         .then(response => {
-          this.$router.push({ name: 'book', params: {id: this.book.id} })
+          if (response.data !== 'deleted') {
+            this.$q.notify('Book has been updated')
+            this.$router.push({ name: 'book', params: {id: this.book.id} })
+          } else {
+            this.$q.notify('Book has been deleted')
+            this.$router.push({ name: 'books' })
+          }
         })
         .catch(function (error) {
           console.log(error)

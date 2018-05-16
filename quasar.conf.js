@@ -5,7 +5,7 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'axios',
-      'hellojs'
+      'quagga'
     ],
     css: [
       'app.styl'
@@ -20,8 +20,9 @@ module.exports = function (ctx) {
       remove: []
     },
     build: {
+      publicPath: '/bookclub/',
       scopeHoisting: true,
-      vueRouterMode: 'history',
+      vueRouterMode: 'hash',
       // gzip: true,
       // analyze: true,
       // extractCSS: false,
@@ -76,6 +77,7 @@ module.exports = function (ctx) {
       ],
       // Quasar plugins
       plugins: [
+        'Dialog',
         'Loading',
         'LocalStorage',
         'Notify'
@@ -87,13 +89,13 @@ module.exports = function (ctx) {
     pwa: {
       cacheExt: 'js,html,css,ttf,eot,otf,woff,woff2,json,svg,gif,jpg,jpeg,png,wav,ogg,webm,flac,aac,mp4,mp3',
       manifest: {
-        // name: 'Quasar App',
-        // short_name: 'Quasar-PWA',
+        name: 'Ballito Bookclub',
+        short_name: 'Bookclub',
         // description: 'Best PWA App in town!',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
+        theme_color: '#0b3c5d',
         icons: [
           {
             'src': 'statics/icons/icon-128x128.png',

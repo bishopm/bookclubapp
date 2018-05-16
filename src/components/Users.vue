@@ -2,10 +2,8 @@
   <q-list v-if="authorised">
     <p class="caption text-center">All members</p>
     <q-item v-if="users" v-for="user in users" :key="user.id" :to="'/users/' + user.id">
-      <q-item-side :image="user.image" />
       <q-item-main>
-        {{user.name}}<br>
-        {{user.email}}
+        <b>{{user.name}}</b>&nbsp;<small>{{user.email}}</small><br>
         <small v-if="user.authorised==0">New user - click to authorise</small>
       </q-item-main>
     </q-item>
@@ -36,7 +34,8 @@ export default {
     if (!localStorage.getItem('BC_Users')) {
       this.$q.loading.show()
     }
-    this.$axios.get('http://localhost/bookclub/public/users')
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/users')
       .then((response) => {
         this.users = response.data
         this.$q.loading.hide()

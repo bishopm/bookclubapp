@@ -1,17 +1,41 @@
 <template>
-  <div class="layout-padding text-center">
-    <div v-if="loggedIn">
-      You are logged in as {{loggedIn.name}}
-      <div v-if="profile">
-        <h3>{{profile.displayName}}</h3>
-        <img v-if="profile.image" :src="profile.image.url" />
-      </div>
-    </div>
-    <div v-else>
-      <h4>Login using Google or Facebook</h4>
-      <q-btn icon="google" @click="auth('google')">Google</q-btn>
-      <q-btn icon="facebook" @click="auth('facebook')">Facebook</q-btn>
-    </div>
+  <div class="layout-padding">
+    <q-tabs position="top" color="primary">
+      <q-tab default slot="title" name="tab-1" icon="lock_open" label="Login"/>
+      <q-tab slot="title" name="tab-2" icon="create" label="Register"/>
+      <q-tab-pane class="no-border" name="tab-1">
+        <div class="alert alert-danger" v-if="error">
+          <p>There was an error, unable to sign in with those credentials.</p>
+        </div>
+        <form autocomplete="off" @submit.prevent="login" method="post">
+          <div class="q-pa-sm">
+            <q-input float-label="Email" type="email" v-model="email" required />
+          </div>
+          <div class="q-pa-sm">
+            <q-input float-label="Password" type="password" v-model="password" required />
+          </div>
+          <div class="q-pa-sm text-center">
+            <q-btn @click="login">Sign in</q-btn>
+          </div>
+        </form>
+      </q-tab-pane>
+      <q-tab-pane class="no-border" name="tab-2">
+        <form autocomplete="off" @submit.prevent="login" method="post">
+          <div class="q-pa-sm">
+            <q-input float-label="Name" v-model="newname" required />
+          </div>
+          <div class="q-pa-sm">
+            <q-input float-label="Email" type="email" v-model="newemail" required />
+          </div>
+          <div class="q-pa-sm">
+            <q-input float-label="Password" type="password" v-model="newpassword" required />
+          </div>
+          <div class="q-pa-sm text-center">
+            <q-btn @click="register">Register</q-btn>
+          </div>
+        </form>
+      </q-tab-pane>
+    </q-tabs>
   </div>
 </template>
 
@@ -20,43 +44,62 @@ export default {
   data () {
     return {
       profile: {},
-      loggedIn: '',
-      authRes: {}
+      email: '',
+      password: '',
+      newpassword: '',
+      newemail: '',
+      newname: '',
+      error: 0
     }
   },
-  props: ['token'],
   mounted () {
-    this.loggedIn = this.$store.state.profile
+    if (this.$store.state.profile) {
+      this.profile = this.$store.state.profile
+    }
   },
   methods: {
-    auth (network) {
-      const hello = this.hello
-      hello(network).login().then(() => {
-        hello(network).api('/me')
-          .then((json) => {
-            this.profile.name = json['displayName']
-            this.profile.image = json['image']['url']
-            this.profile.provider_id = json['id']
-            this.profile.provider = network
-            this.$axios.post('http://localhost/bookclub/public/login',
-              {
-                name: this.profile.name,
-                provider_id: this.profile.provider_id,
-                provider: this.profile.provider,
-                image: this.profile.image
-              })
-              .then(response => {
-                this.profile.id = response.data.id
-                this.profile.authorised = response.data.authorised
-                this.$store.commit('setProfile', this.profile)
-                localStorage.setItem('BC_profile', JSON.stringify(this.profile))
-                this.loggedIn = this.$store.state.profile
-              })
-              .catch(function (error) {
-                console.log(error)
-              })
-          })
-      })
+    login () {
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/login',
+        {
+          email: this.email,
+          password: this.password
+        })
+        .then(response => {
+          this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
+          this.profile.token = response.data.access_token
+          this.$axios.post('https://bishop.net.za/bookclub/api/public/me')
+            .then(response => {
+              this.profile.id = response.data.id
+              this.profile.name = response.data.name
+              this.profile.email = response.data.email
+              this.profile.authorised = response.data.authorised
+              this.$store.commit('setProfile', this.profile)
+              localStorage.setItem('BC_profile', JSON.stringify(this.profile))
+              this.$router.push({name: 'home'})
+            })
+            .catch(function (error) {
+              this.error = error
+            })
+        })
+        .catch(function (error) {
+          this.error = error
+        })
+    },
+    register () {
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/users/register',
+        {
+          email: this.newemail,
+          password: this.newpassword,
+          name: this.newname
+        })
+        .then(response => {
+          this.email = this.newemail
+          this.password = this.newpassword
+          this.login()
+        })
+        .catch(function (error) {
+          this.error = error
+        })
     }
   }
 }

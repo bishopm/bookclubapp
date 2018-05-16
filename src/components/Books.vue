@@ -30,7 +30,6 @@ export default {
       search: ''
     }
   },
-  props: ['token'],
   mixins: [saveState],
   methods: {
     getSaveStateConfig () {
@@ -42,12 +41,14 @@ export default {
       this.$router.push({name: 'addbook'})
     },
     searchdb () {
-      this.$axios.post('http://localhost/bookclub/public/books/search',
+      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/search',
         {
           search: this.search
         })
         .then(response => {
           this.books = response.data
+          this.$q.loading.hide()
         })
         .catch(function (error) {
           console.log(error)

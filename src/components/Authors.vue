@@ -29,7 +29,10 @@ export default {
       }
     },
     searchdb () {
+<<<<<<< HEAD
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+=======
+>>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
       this.$axios.post('https://bishop.net.za/bookclub/api/public/authors/search',
         {
           search: this.search

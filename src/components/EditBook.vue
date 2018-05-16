@@ -75,7 +75,10 @@ export default {
         console.log(error)
         this.$q.loading.hide()
       })
+<<<<<<< HEAD
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+=======
+>>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
     this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
@@ -93,6 +96,7 @@ export default {
       })
   },
   methods: {
+<<<<<<< HEAD
     confirmDelete () {
       this.$q.dialog({
         title: 'Delete a book',
@@ -108,6 +112,10 @@ export default {
     updateBook (action) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
       this.$axios.post('https://bishop.net.za/bookclub/api/public/books/' + action + '/' + this.book.id,
+=======
+    updateBook () {
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/update/' + this.book.id,
+>>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
         {
           title: this.book.title,
           author_id: this.book.author_id,

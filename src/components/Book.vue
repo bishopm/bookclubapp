@@ -71,7 +71,10 @@ export default {
         })
     },
     deletecomment (id) {
+<<<<<<< HEAD
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+=======
+>>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
       this.$axios.post('https://bishop.net.za/bookclub/api/public/books/deletecomment/' + id)
         .then((response) => {
           this.refreshdata()
@@ -81,7 +84,10 @@ export default {
         })
     },
     borrow () {
+<<<<<<< HEAD
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+=======
+>>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
       this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/add',
         {
           loandate: this.today,
@@ -99,7 +105,10 @@ export default {
       this.$router.push({ name: 'editbook', params: {id: this.book.id} })
     },
     returnbook () {
+<<<<<<< HEAD
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+=======
+>>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
       this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/update',
         {
           returndate: this.today,

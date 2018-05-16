@@ -14,7 +14,8 @@
       <q-input name="title" v-model="book.title" @keyup="checkReq" type="text" float-label="Title" />
     </div>
     <div class="q-pa-sm" v-if="authors">
-      <q-select name="author_id" filter @blur="checkReq" filter-placeholder="Search..." float-label="Author" autofocus-filter v-model="book.author_id" :options="selectOptions" />
+      <label class="typo__label">Author/s</label>
+      <multiselect v-model="book.authors" placeholder="Choose an author" label="label" track-by="code" :options="selectOptions" :multiple="true"></multiselect>
     </div>
     <div class="q-pa-sm" v-if="book.author_id==-1">
       <q-input v-model="book.newsurname" @keyup="checkReq" type="text" float-label="Surname" />
@@ -38,7 +39,7 @@ import Multiselect from 'vue-multiselect'
 export default {
   data () {
     return {
-      book: {title: '', author_id: 0, newauthor: '', genres: [], isbn: ''},
+      book: {title: '', authors: [], newauthor: '', genres: [], isbn: ''},
       authors: [],
       selectOptions: [{label: 'New author (enter below)', value: -1}],
       genreOptions: [],
@@ -139,9 +140,18 @@ export default {
           this.book.description = response.data.items[0].volumeInfo.description
           this.book.image = response.data.items[0].volumeInfo.imageLinks.thumbnail
           for (var na of response.data.items[0].volumeInfo.authors) {
-            console.log(na)
+            this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+            this.$axios.post('http://localhost/bookclub/public/authors',
+              {
+                author: na
+              })
+              .then(response => {
+                this.book.authors.push(response.data)
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
           }
-          console.log(this.selectOptions)
         })
         .catch(function (error) {
           console.log(error)

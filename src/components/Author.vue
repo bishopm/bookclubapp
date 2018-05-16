@@ -28,7 +28,7 @@ export default {
   methods: {
     refreshdata () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.get('https://bishop.net.za/bookclub/api/public/authors/' + this.$route.params.id)
+      this.$axios.get('http://localhost/bookclub/public/authors/' + this.$route.params.id)
         .then((response) => {
           this.author = response.data
         })

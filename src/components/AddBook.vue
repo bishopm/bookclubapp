@@ -2,13 +2,13 @@
   <div class="layout-padding">
     <p class="q-title text-center">Add a new book</p>
     <div class="text-center q-pa-sm">
-      <q-btn color="primary" @click="scanCode()" label="Scan barcode" />
+      <q-btn v-if="!book.isbn" color="primary" @click="scanCode()" label="Scan barcode" />
     </div>
     <div class="text-center q-pa-sm">
       <img :src="book.image">
     </div>
     <div class="q-pa-sm">
-      <q-input name="isbn" v-model="book.isbn" type="text" float-label="ISBN / barcode" />
+      <q-input name="isbn" @blur="isbnAdded" v-model="book.isbn" type="text" float-label="ISBN / barcode" />
     </div>
     <div class="q-pa-sm">
       <q-input name="title" v-model="book.title" @keyup="checkReq" type="text" float-label="Title" />
@@ -17,7 +17,8 @@
       <q-select name="author_id" filter @blur="checkReq" filter-placeholder="Search..." float-label="Author" autofocus-filter v-model="book.author_id" :options="selectOptions" />
     </div>
     <div class="q-pa-sm" v-if="book.author_id==-1">
-      <q-input v-model="book.newauthor" @keyup="checkReq" type="text" float-label="Surname, first name" />
+      <q-input v-model="book.newsurname" @keyup="checkReq" type="text" float-label="Surname" />
+      <q-input v-model="book.newfirstname" @keyup="checkReq" type="text" float-label="First name" />
     </div>
     <div class="q-pa-sm">
       <q-input v-model="book.description" type="textarea" float-label="Brief description" :max-height="30" :min-rows="3" />
@@ -37,7 +38,7 @@ import Multiselect from 'vue-multiselect'
 export default {
   data () {
     return {
-      book: {title: '', author_id: 0, newauthor: '', genres: []},
+      book: {title: '', author_id: 0, newauthor: '', genres: [], isbn: ''},
       authors: [],
       selectOptions: [{label: 'New author (enter below)', value: -1}],
       genreOptions: [],
@@ -49,7 +50,7 @@ export default {
     Multiselect
   },
   mounted () {
-    if (this.$route.params) {
+    if (this.$route.params.isbn) {
       this.book.isbn = this.$route.params.isbn
       this.isbnAdded()
     }
@@ -57,11 +58,11 @@ export default {
       this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
+    this.$axios.get('http://localhost/bookclub/public/authors')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
-            label: response.data[ukey].author,
+            label: response.data[ukey].surname + ', ' + response.data[ukey].firstname,
             value: response.data[ukey].id
           }
           this.selectOptions.push(newitem)
@@ -72,7 +73,7 @@ export default {
         console.log(error)
         this.$q.loading.hide()
       })
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
+    this.$axios.get('http://localhost/bookclub/public/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -90,12 +91,9 @@ export default {
   },
   methods: {
     addBook () {
-<<<<<<< HEAD
       this.$q.loading.show()
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-=======
->>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/add',
+      this.$axios.post('http://localhost/bookclub/public/books/add',
         {
           title: this.book.title,
           author_id: this.book.author_id,
@@ -138,9 +136,12 @@ export default {
       this.$axios.get('https://www.googleapis.com/books/v1/volumes?q=' + this.book.isbn + ':isbn&key=AIzaSyB48VtblZEfmSsE8l1ASs1yzs-mOFOhyI8')
         .then(response => {
           this.book.title = response.data.items[0].volumeInfo.title
-          this.book.author = response.data.items[0].volumeInfo.authors
           this.book.description = response.data.items[0].volumeInfo.description
           this.book.image = response.data.items[0].volumeInfo.imageLinks.thumbnail
+          for (var na of response.data.items[0].volumeInfo.authors) {
+            console.log(na)
+          }
+          console.log(this.selectOptions)
         })
         .catch(function (error) {
           console.log(error)

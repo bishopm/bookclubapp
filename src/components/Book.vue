@@ -55,7 +55,7 @@ export default {
   methods: {
     addComment () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/addcomment',
+      this.$axios.post('http://localhost/bookclub/public/books/addcomment',
         {
           user_id: this.profile.id,
           book_id: this.book.id,
@@ -71,11 +71,8 @@ export default {
         })
     },
     deletecomment (id) {
-<<<<<<< HEAD
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-=======
->>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/deletecomment/' + id)
+      this.$axios.post('http://localhost/bookclub/public/books/deletecomment/' + id)
         .then((response) => {
           this.refreshdata()
         })
@@ -84,11 +81,8 @@ export default {
         })
     },
     borrow () {
-<<<<<<< HEAD
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-=======
->>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/add',
+      this.$axios.post('http://localhost/bookclub/public/loans/add',
         {
           loandate: this.today,
           user_id: this.profile.id,
@@ -105,11 +99,8 @@ export default {
       this.$router.push({ name: 'editbook', params: {id: this.book.id} })
     },
     returnbook () {
-<<<<<<< HEAD
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-=======
->>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/update',
+      this.$axios.post('http://localhost/bookclub/public/loans/update',
         {
           returndate: this.today,
           id: this.book.status.id
@@ -125,7 +116,7 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
       this.today = new Date().toISOString().substr(0, 10)
       this.profile = this.$store.state.profile
-      this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id + '/' + this.profile.id)
+      this.$axios.get('http://localhost/bookclub/public/books/' + this.$route.params.id + '/' + this.profile.id)
         .then((response) => {
           this.book = response.data
           this.comments = this.book.comments

@@ -35,7 +35,7 @@ export default {
       this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/comments')
+    this.$axios.get('http://localhost/bookclub/public/comments')
       .then(response => {
         this.comments = response.data
         this.$q.loading.hide()

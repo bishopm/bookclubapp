@@ -45,7 +45,7 @@ export default {
       this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id)
+    this.$axios.get('http://localhost/bookclub/public/books/' + this.$route.params.id)
       .then((response) => {
         this.book = response.data
         for (var ukey in this.book.tags) {
@@ -60,7 +60,7 @@ export default {
         console.log(error)
       })
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
+    this.$axios.get('http://localhost/bookclub/public/authors')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -75,11 +75,8 @@ export default {
         console.log(error)
         this.$q.loading.hide()
       })
-<<<<<<< HEAD
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-=======
->>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
+    this.$axios.get('http://localhost/bookclub/public/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -96,7 +93,6 @@ export default {
       })
   },
   methods: {
-<<<<<<< HEAD
     confirmDelete () {
       this.$q.dialog({
         title: 'Delete a book',
@@ -111,11 +107,7 @@ export default {
     },
     updateBook (action) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/' + action + '/' + this.book.id,
-=======
-    updateBook () {
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/update/' + this.book.id,
->>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
+      this.$axios.post('http://localhost/bookclub/public/books/' + action + '/' + this.book.id,
         {
           title: this.book.title,
           author_id: this.book.author_id,

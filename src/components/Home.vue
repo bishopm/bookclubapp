@@ -58,7 +58,7 @@ export default {
       this.profile = this.$store.state.profile
       this.authorised = this.$store.state.profile.authorised
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.get('https://bishop.net.za/bookclub/api/public/home/' + this.$store.state.profile.id)
+      this.$axios.get('http://localhost/bookclub/public/home/' + this.$store.state.profile.id)
         .then((response) => {
           if ((response.data.authorised === 1) && (!this.registered)) {
             this.authorised = 1

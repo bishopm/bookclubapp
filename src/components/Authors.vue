@@ -29,11 +29,8 @@ export default {
       }
     },
     searchdb () {
-<<<<<<< HEAD
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-=======
->>>>>>> 222e10fd772ef3f403ec95aa1a888ce7331f29ee
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/authors/search',
+      this.$axios.post('http://localhost/bookclub/public/authors/search',
         {
           search: this.search
         })
@@ -51,7 +48,7 @@ export default {
       this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
+    this.$axios.get('http://localhost/bookclub/public/authors')
       .then((response) => {
         this.authors = response.data
         this.$q.loading.hide()

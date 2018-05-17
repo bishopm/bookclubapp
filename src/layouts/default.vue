@@ -43,6 +43,10 @@
           <q-item-side icon="add" />
           <q-item-main label="New book" sublabel="enter new book details" />
         </q-item>
+        <q-item to="/logout">
+          <q-item-side icon="close" />
+          <q-item-main label="Log out" sublabel="log out of the app" />
+        </q-item>
       </q-list>
     </q-layout-drawer>
     <q-page-container>

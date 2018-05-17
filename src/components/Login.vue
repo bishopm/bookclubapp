@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     login () {
-      this.$axios.post('http://localhost/bookclub/public/login',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/login',
         {
           email: this.email,
           password: this.password
@@ -67,7 +67,7 @@ export default {
         .then(response => {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
           this.profile.token = response.data.access_token
-          this.$axios.post('http://localhost/bookclub/public/me')
+          this.$axios.post('https://bishop.net.za/bookclub/api/public/me')
             .then(response => {
               this.profile.id = response.data.id
               this.profile.name = response.data.name
@@ -86,7 +86,7 @@ export default {
         })
     },
     register () {
-      this.$axios.post('http://localhost/bookclub/public/users/register',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/users/register',
         {
           email: this.newemail,
           password: this.newpassword,

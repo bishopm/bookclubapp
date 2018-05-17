@@ -32,17 +32,17 @@ export default {
   mounted () {
     this.authorised = this.$store.state.profile.authorised
     if (!localStorage.getItem('BC_Users')) {
-      this.$q.loading.show()
+      // this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('http://localhost/bookclub/public/users')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/users')
       .then((response) => {
         this.users = response.data
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
   }
 }

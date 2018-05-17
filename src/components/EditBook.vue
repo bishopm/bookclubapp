@@ -4,18 +4,23 @@
     <div class="q-pa-sm">
       <q-input name="title" v-model="book.title" @keyup="checkReq" type="text" float-label="Title" />
     </div>
-    <div class="q-pa-sm" v-if="authors && book.author_id">
-      <q-select name="author_id" filter @blur="checkReq" filter-placeholder="Search..." float-label="Author" autofocus-filter v-model="book.author_id" :options="selectOptions" />
-    </div>
-    <div class="q-pa-sm" v-if="book.author_id==-1">
-      <q-input v-model="book.newauthor" @keyup="checkReq" type="text" float-label="Surname, first name" />
+    <div class="q-pa-sm text-center">
+      <img :src="book.image" />
+      <q-input v-model="book.image" type="text" float-label="Image (url)" />
     </div>
     <div class="q-pa-sm">
-      <q-input v-model="book.description" type="textarea" float-label="Brief description" :max-height="30" :min-rows="3" />
+      <label>Author/s</label>
+      <multiselect v-model="authors" placeholder="Choose an author" label="label" track-by="value" :options="authorOptions" :multiple="true"></multiselect>
+    </div>
+    <div class="q-pa-sm">
+      <q-input v-model="book.isbn" type="text" float-label="ISBN / barcode" />
+    </div>
+    <div class="q-pa-sm">
+      <q-input v-model="book.description" type="textarea" float-label="Description" :max-height="100" :min-rows="5" />
     </div>
     <div class="q-pa-sm" v-if="genreOptions">
-      <label class="typo__label">Genre/s</label>
-      <multiselect v-model="genres" tag-placeholder="Add this as new tag" placeholder="Search or add a tag" label="name" track-by="code" :options="genreOptions" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
+      <label>Genre/s</label>
+      <multiselect v-model="genres" tag-placeholder="Add this as new genre" placeholder="Search or add a tag" label="name" track-by="code" :options="genreOptions" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
     </div>
     <div class="text-center q-pa-sm">
       <q-btn :disable="btn_disabled" color="primary" @click="updateBook('update')" :label="btn_msg" />
@@ -30,22 +35,37 @@ export default {
   data () {
     return {
       book: {},
-      authors: [],
-      selectOptions: [{label: 'New author (enter below)', value: -1}],
+      authorOptions: [],
       btn_disabled: false,
       genres: [],
       genreOptions: [],
-      btn_msg: 'OK'
+      btn_msg: 'OK',
+      authors: []
     }
   },
-  props: ['token'],
   components: { Multiselect },
   mounted () {
     if (!localStorage.getItem('BC_Authors')) {
-      this.$q.loading.show()
+      // this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('http://localhost/bookclub/public/books/' + this.$route.params.id)
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
+      .then((response) => {
+        for (var ukey in response.data) {
+          var newitem = {
+            label: response.data[ukey].surname + ', ' + response.data[ukey].firstname,
+            value: response.data[ukey].id
+          }
+          this.authorOptions.push(newitem)
+        }
+        // this.$q.loading.hide()
+      })
+      .catch(function (error) {
+        console.log(error)
+        // this.$q.loading.hide()
+      })
+    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id)
       .then((response) => {
         this.book = response.data
         for (var ukey in this.book.tags) {
@@ -55,28 +75,19 @@ export default {
           }
           this.genres.push(newitem)
         }
-      })
-      .catch(function (error) {
-        console.log(error)
-      })
-    this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('http://localhost/bookclub/public/authors')
-      .then((response) => {
-        for (var ukey in response.data) {
-          var newitem = {
-            label: response.data[ukey].author,
-            value: response.data[ukey].id
+        for (var ukey2 in this.book.authors) {
+          var newitem2 = {
+            label: response.data.authors[ukey2].surname + ', ' + response.data.authors[ukey2].firstname,
+            value: response.data.authors[ukey2].id
           }
-          this.selectOptions.push(newitem)
+          this.authors.push(newitem2)
         }
-        this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        this.$q.loading.hide()
       })
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('http://localhost/bookclub/public/books/alltags')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -85,11 +96,11 @@ export default {
           }
           this.genreOptions.push(newitem)
         }
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
   },
   methods: {
@@ -107,11 +118,12 @@ export default {
     },
     updateBook (action) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('http://localhost/bookclub/public/books/' + action + '/' + this.book.id,
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/' + action + '/' + this.book.id,
         {
           title: this.book.title,
-          author_id: this.book.author_id,
-          newauthor: this.book.newauthor,
+          isbn: this.book.isbn,
+          image: this.book.image,
+          authors: this.authors,
           description: this.book.description,
           genres: this.genres
         })
@@ -143,7 +155,7 @@ export default {
         code: newTag.substring(0, 2) + Math.floor((Math.random() * 10000000))
       }
       this.genreOptions.push(tag)
-      this.book.genres.push(tag)
+      this.genres.push(tag)
     }
   }
 }

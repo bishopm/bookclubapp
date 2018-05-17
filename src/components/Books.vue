@@ -6,7 +6,7 @@
       <q-item v-if="books" v-for="book in books" :key="book.id" :to="'/books/' + book.id">
         <q-item-main>
           {{book.title}}<br>
-          <small><i>{{book.author.author}}</i></small>
+          <small><span v-for="author in book.authors" :key="author.id"><i>{{author.firstname}} {{author.surname}}</i><br></span></small>
         </q-item-main>
         <q-item-side class="text-right">
           <small v-if="book.status">{{book.status.user.name}}</small>
@@ -42,23 +42,23 @@ export default {
     },
     searchdb () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('http://localhost/bookclub/public/books/search',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/search',
         {
           search: this.search
         })
         .then(response => {
           this.books = response.data
-          this.$q.loading.hide()
+          // this.$q.loading.hide()
         })
         .catch(function (error) {
           console.log(error)
-          this.$q.loading.hide()
+          // this.$q.loading.hide()
         })
     }
   },
   mounted () {
     if (!localStorage.getItem('BC_Books')) {
-      this.$q.loading.show()
+      // this.$q.loading.show()
     }
     this.searchdb()
   }

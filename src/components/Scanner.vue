@@ -44,8 +44,8 @@ export default {
   methods: {
     detected (result) {
       if ((result) && (result.codeResult)) {
-        this.newbook.isbn = result.codeResult.code
         Quagga.stop()
+        this.newbook.isbn = result.codeResult.code
         this.$router.push('/addbook/' + this.newbook.isbn)
       }
     }

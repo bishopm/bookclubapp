@@ -4,8 +4,8 @@
       <p class="text-center" v-if="!authorised">Welcome, {{profile.name}}<br><br>
         <small>(You are still waiting for one of the other members to authorise your profile)</small>
       </p>
-      <p v-else class="text-center">Welcome, {{profile.name}}!</p>
-      <div v-if="members" class="row text-center">
+      <p v-else class="text-center">Welcome, {{profile.name}}</p>
+      <div class="row text-center">
         <div class="col">
           <router-link :to="{ name: 'books' }">
             <q-icon color="secondary" size="30pt" name="book" />
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import saveState from 'vue-save-state'
 export default {
   data () {
     return {
@@ -53,12 +54,20 @@ export default {
       rated: []
     }
   },
+  mixins: [saveState],
+  methods: {
+    getSaveStateConfig () {
+      return {
+        'cacheKey': 'BC_Home'
+      }
+    }
+  },
   mounted () {
     if (this.$store.state.profile) {
       this.profile = this.$store.state.profile
       this.authorised = this.$store.state.profile.authorised
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.get('http://localhost/bookclub/public/home/' + this.$store.state.profile.id)
+      this.$axios.get('https://bishop.net.za/bookclub/api/public/home/' + this.$store.state.profile.id)
         .then((response) => {
           if ((response.data.authorised === 1) && (!this.registered)) {
             this.authorised = 1

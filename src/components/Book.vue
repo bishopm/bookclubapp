@@ -1,8 +1,14 @@
 <template>
   <div v-if="book" class="text-center layout-padding">
     <p class="caption">
-      {{book.title}}&nbsp;<q-icon @click.native="editbook" name="edit"/><br><small>{{book.author.author}}</small>
+      {{book.title}}&nbsp;<q-icon @click.native="editbook" name="edit"/><br>
+      <img :src="book.image">
     </p>
+    <span v-for="author in book.authors" :key="author.id">
+      <router-link :to="{ name: 'author', params: { id: author.id } }">
+        <small>{{author.firstname}} {{author.surname}}</small>
+      </router-link><br>
+    </span>
     <div v-if="book.tags">
       <q-chip style="margin-right:5px;" dense square icon="turned_in" color="secondary" v-for="tag in book.tags" :key="tag.id">
         <router-link :to="{ name: 'genre', params: { tag: tag.slug }}" class="text-white" style="text-decoration:none;">
@@ -23,7 +29,7 @@
     <p class="caption">Comments</p>
     <q-field multiline>
       <q-input v-model="newcomment" :after="[{icon: 'add', handler: addComment}]" class="full-width bg-white" type="textarea" float-label="Add a comment/rating" :max-height="30" :min-rows="3" />
-      <q-rating v-if="book.unrated" v-model="newrating" color="red"></q-rating>
+      <q-rating v-if="book.unrated" v-model="newrating" color="black"></q-rating>
     </q-field>
     <q-list no-border v-if="comments">
       <q-item v-for="comment in comments" :key="comment.id">
@@ -55,7 +61,7 @@ export default {
   methods: {
     addComment () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('http://localhost/bookclub/public/books/addcomment',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/addcomment',
         {
           user_id: this.profile.id,
           book_id: this.book.id,
@@ -72,7 +78,7 @@ export default {
     },
     deletecomment (id) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('http://localhost/bookclub/public/books/deletecomment/' + id)
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/deletecomment/' + id)
         .then((response) => {
           this.refreshdata()
         })
@@ -82,7 +88,7 @@ export default {
     },
     borrow () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('http://localhost/bookclub/public/loans/add',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/add',
         {
           loandate: this.today,
           user_id: this.profile.id,
@@ -100,7 +106,7 @@ export default {
     },
     returnbook () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('http://localhost/bookclub/public/loans/update',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/update',
         {
           returndate: this.today,
           id: this.book.status.id
@@ -116,7 +122,7 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
       this.today = new Date().toISOString().substr(0, 10)
       this.profile = this.$store.state.profile
-      this.$axios.get('http://localhost/bookclub/public/books/' + this.$route.params.id + '/' + this.profile.id)
+      this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id + '/' + this.profile.id)
         .then((response) => {
           this.book = response.data
           this.comments = this.book.comments

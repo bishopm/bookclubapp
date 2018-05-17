@@ -32,17 +32,17 @@ export default {
   },
   mounted () {
     if (!localStorage.getItem('BC_Comments')) {
-      this.$q.loading.show()
+      // this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('http://localhost/bookclub/public/comments')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/comments')
       .then(response => {
         this.comments = response.data
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
   }
 

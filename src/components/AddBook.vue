@@ -17,12 +17,8 @@
       <label class="typo__label">Author/s</label>
       <multiselect v-model="book.authors" placeholder="Choose an author" label="label" track-by="code" :options="selectOptions" :multiple="true"></multiselect>
     </div>
-    <div class="q-pa-sm" v-if="book.author_id==-1">
-      <q-input v-model="book.newsurname" @keyup="checkReq" type="text" float-label="Surname" />
-      <q-input v-model="book.newfirstname" @keyup="checkReq" type="text" float-label="First name" />
-    </div>
     <div class="q-pa-sm">
-      <q-input v-model="book.description" type="textarea" float-label="Brief description" :max-height="30" :min-rows="3" />
+      <q-input v-model="book.description" type="textarea" float-label="Brief description" :max-height="100" :min-rows="5" />
     </div>
     <div class="q-pa-sm" v-if="genreOptions">
       <label class="typo__label">Genre/s</label>
@@ -39,9 +35,9 @@ import Multiselect from 'vue-multiselect'
 export default {
   data () {
     return {
-      book: {title: '', authors: [], newauthor: '', genres: [], isbn: ''},
+      book: {title: '', authors: [], description: '', genres: [], isbn: '', image: ''},
       authors: [],
-      selectOptions: [{label: 'New author (enter below)', value: -1}],
+      selectOptions: [],
       genreOptions: [],
       btn_disabled: true,
       btn_msg: 'Title and author are compulsory fields'
@@ -56,10 +52,10 @@ export default {
       this.isbnAdded()
     }
     if (!localStorage.getItem('BC_Authors')) {
-      this.$q.loading.show()
+      // this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('http://localhost/bookclub/public/authors')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -68,13 +64,13 @@ export default {
           }
           this.selectOptions.push(newitem)
         }
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
-    this.$axios.get('http://localhost/bookclub/public/books/alltags')
+    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -83,37 +79,38 @@ export default {
           }
           this.genreOptions.push(newitem)
         }
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        this.$q.loading.hide()
+        // this.$q.loading.hide()
       })
   },
   methods: {
     addBook () {
-      this.$q.loading.show()
+      // this.$q.loading.show()
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('http://localhost/bookclub/public/books/add',
+      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/add',
         {
           title: this.book.title,
-          author_id: this.book.author_id,
-          newauthor: this.book.newauthor,
+          authors: this.book.authors,
           description: this.book.description,
+          image: this.book.image,
+          isbn: this.book.isbn,
           genres: this.book.genres
         })
         .then(response => {
-          this.$q.loading.hide()
+          // this.$q.loading.hide()
           this.$q.notify('Book has been added')
-          this.$router.push('books')
+          this.$router.push({name: 'books'})
         })
         .catch(function (error) {
           console.log(error)
-          this.$q.loading.hide()
+          // this.$q.loading.hide()
         })
     },
     checkReq () {
-      if ((this.book.title.length > 2) && ((this.book.author_id > 0) || (this.book.newauthor.length > 2))) {
+      if ((this.book.title.length > 2) && (this.book.authors.length > 0)) {
         this.btn_disabled = false
         this.btn_msg = 'OK'
       } else {
@@ -133,29 +130,37 @@ export default {
       this.$router.push({name: 'scanner'})
     },
     isbnAdded () {
-      delete this.$axios.defaults.headers.common['Authorization']
-      this.$axios.get('https://www.googleapis.com/books/v1/volumes?q=' + this.book.isbn + ':isbn&key=AIzaSyB48VtblZEfmSsE8l1ASs1yzs-mOFOhyI8')
-        .then(response => {
-          this.book.title = response.data.items[0].volumeInfo.title
-          this.book.description = response.data.items[0].volumeInfo.description
-          this.book.image = response.data.items[0].volumeInfo.imageLinks.thumbnail
-          for (var na of response.data.items[0].volumeInfo.authors) {
-            this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-            this.$axios.post('http://localhost/bookclub/public/authors',
-              {
-                author: na
-              })
-              .then(response => {
-                this.book.authors.push(response.data)
-              })
-              .catch(function (error) {
-                console.log(error)
-              })
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      if (this.book.isbn.length > 5) {
+        delete this.$axios.defaults.headers.common['Authorization']
+        this.$axios.get('https://www.googleapis.com/books/v1/volumes?q=' + this.book.isbn + ':isbn&key=AIzaSyB48VtblZEfmSsE8l1ASs1yzs-mOFOhyI8')
+          .then(response => {
+            this.book.title = response.data.items[0].volumeInfo.title
+            this.book.description = response.data.items[0].volumeInfo.description
+            this.book.image = response.data.items[0].volumeInfo.imageLinks.thumbnail
+            for (var na of response.data.items[0].volumeInfo.authors) {
+              this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+              this.$axios.post('https://bishop.net.za/bookclub/api/public/authors',
+                {
+                  author: na
+                })
+                .then(response => {
+                  if (response.data.existing) {
+                    this.book.authors.push(response.data.existing)
+                  } else {
+                    this.selectOptions.push(response.data.new)
+                    this.book.authors.push(response.data.new)
+                  }
+                  this.checkReq()
+                })
+                .catch(function (error) {
+                  console.log(error)
+                })
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
     }
   }
 }

@@ -10,6 +10,7 @@ export default {
   },
   mounted () {
     this.$store.commit('setProfile', null)
+    localStorage.setItem('BC_profile', '')
     this.$router.push({name: 'home'})
   }
 }

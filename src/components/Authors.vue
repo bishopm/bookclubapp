@@ -39,23 +39,23 @@ export default {
         })
         .catch(function (error) {
           console.log(error)
-          // this.$q.loading.hide()
+          this.$q.loading.hide()
         })
     }
   },
   mounted () {
     if (!localStorage.getItem('BC_Authors')) {
-      // this.$q.loading.show()
+      this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
     this.$axios.get(this.$store.state.hostname + '/authors')
       .then((response) => {
         this.authors = response.data
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
   }
 

@@ -19,8 +19,7 @@
       <q-input v-model="book.description" type="textarea" float-label="Description" :max-height="100" :min-rows="5" />
     </div>
     <div class="text-center q-pa-sm">
-      <q-btn-toggle v-model="book.owned" toggle-color="primary"
-      :options="ownedOptions"/>
+      <q-btn-toggle v-model="book.owned" toggle-color="primary" :options="ownedOptions"/>
     </div>
     <div class="q-pa-sm" v-if="genreOptions">
       <label>Genre/s</label>
@@ -38,14 +37,14 @@ import Multiselect from 'vue-multiselect'
 export default {
   data () {
     return {
-      book: {'owned': 1},
+      book: {},
       authorOptions: [],
       btn_disabled: false,
       genres: [],
       genreOptions: [],
       ownedOptions: [
-        {label: 'We have this book', value: 1},
-        {label: 'Wish list', value: 0}
+        {label: 'We have this book', value: 'owned'},
+        {label: 'On the wishlist', value: 'wishlist'}
       ],
       btn_msg: 'OK',
       authors: []
@@ -54,7 +53,7 @@ export default {
   components: { Multiselect },
   mounted () {
     if (!localStorage.getItem('BC_Authors')) {
-      // this.$q.loading.show()
+      this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
     this.$axios.get(this.$store.state.hostname + '/authors')
@@ -66,11 +65,11 @@ export default {
           }
           this.authorOptions.push(newitem)
         }
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
     this.$axios.get(this.$store.state.hostname + '/books/' + this.$route.params.id)
@@ -104,11 +103,11 @@ export default {
           }
           this.genreOptions.push(newitem)
         }
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
   },
   methods: {

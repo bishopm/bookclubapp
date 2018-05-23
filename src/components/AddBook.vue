@@ -22,7 +22,7 @@
     </div>
     <div class="text-center q-pa-sm">
       <q-btn-toggle v-model="book.owned" toggle-color="primary"
-      :options="[{label: 'We have this book', value: 1},{label: 'Wish list', value: 0}]"/>
+      :options="[{label: 'We have this book', value: 'owned'},{label: 'Wish list', value: 'wishlist'}]"/>
     </div>
     <div class="q-pa-sm" v-if="genreOptions">
       <label>Genre/s</label>
@@ -39,7 +39,7 @@ import Multiselect from 'vue-multiselect'
 export default {
   data () {
     return {
-      book: {title: '', authors: [], description: '', genres: [], isbn: '', image: '', owned: 1},
+      book: {title: '', authors: [], description: '', genres: [], isbn: '', image: '', owned: 'owned'},
       authors: [],
       authorOptions: [],
       genreOptions: [],
@@ -56,7 +56,7 @@ export default {
       this.isbnAdded()
     }
     if (!localStorage.getItem('BC_Authors')) {
-      // this.$q.loading.show()
+      this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
     this.$axios.get(this.$store.state.hostname + '/authors')
@@ -68,11 +68,11 @@ export default {
           }
           this.authorOptions.push(newitem)
         }
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
     this.$axios.get(this.$store.state.hostname + '/books/alltags')
       .then((response) => {
@@ -83,16 +83,16 @@ export default {
           }
           this.genreOptions.push(newitem)
         }
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
       .catch(function (error) {
         console.log(error)
-        // this.$q.loading.hide()
+        this.$q.loading.hide()
       })
   },
   methods: {
     addBook () {
-      // this.$q.loading.show()
+      this.$q.loading.show()
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
       this.$axios.post(this.$store.state.hostname + '/books/add',
         {
@@ -105,13 +105,17 @@ export default {
           owned: this.book.owned
         })
         .then(response => {
-          // this.$q.loading.hide()
-          this.$q.notify('Book has been added')
+          this.$q.loading.hide()
+          if (response.data === 'Existing') {
+            this.$q.notify('This book is already on your system - maybe check your wishlist?')
+          } else {
+            this.$q.notify('Book has been added')
+          }
           this.$router.push({name: 'books'})
         })
         .catch(function (error) {
           console.log(error)
-          // this.$q.loading.hide()
+          this.$q.loading.hide()
         })
     },
     checkReq () {

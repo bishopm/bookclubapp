@@ -48,17 +48,17 @@ export default {
         })
         .then(response => {
           this.books = response.data
-          // this.$q.loading.hide()
+          this.$q.loading.hide()
         })
         .catch(function (error) {
           console.log(error)
-          // this.$q.loading.hide()
+          this.$q.loading.hide()
         })
     }
   },
   mounted () {
     if (!localStorage.getItem('BC_Books')) {
-      // this.$q.loading.show()
+      this.$q.loading.show()
     }
     this.searchdb()
   }

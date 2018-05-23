@@ -42,7 +42,7 @@ export default {
     },
     searchdb () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/search',
+      this.$axios.post(this.$store.state.hostname + '/books/search',
         {
           search: this.search
         })

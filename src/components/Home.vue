@@ -1,10 +1,7 @@
 <template>
   <div class="layout-padding">
-    <div v-if="profile.name" class="q-ma-md">
-      <p class="text-center" v-if="!authorised">Welcome, {{profile.name}}<br><br>
-        <small>(You are still waiting for one of the other members to authorise your profile)</small>
-      </p>
-      <p v-else class="text-center">Welcome, {{profile.name}}</p>
+    <div v-if="loggedIn" class="q-ma-md">
+      <p class="text-center">Welcome, {{profile.name}}</p>
       <div class="row text-center">
         <div class="col">
           <router-link :to="{ name: 'books' }">
@@ -51,7 +48,8 @@ export default {
       books: 0,
       members: 0,
       comments: 0,
-      rated: []
+      rated: [],
+      loggedIn: this.$store.state.loginStatus
     }
   },
   mixins: [saveState],
@@ -63,13 +61,15 @@ export default {
     }
   },
   mounted () {
+    this.$store.commit('setLogin', localStorage.getItem('BC_loginStatus'))
+    this.$store.commit('setProfile', JSON.parse(localStorage.getItem('BC_profile')))
     if (this.$store.state.profile) {
-      this.profile = this.$store.state.profile
       this.authorised = this.$store.state.profile.authorised
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.get('https://bishop.net.za/bookclub/api/public/home/' + this.$store.state.profile.id)
+      this.profile = this.$store.state.profile
+      this.$axios.get(this.$store.state.hostname + '/home/' + this.$store.state.profile.id)
         .then((response) => {
-          if ((response.data.authorised === 1) && (!this.registered)) {
+          if ((response.data.authorised === 1) && (!this.authorised)) {
             this.authorised = 1
             this.profile.authorised = 1
             this.$store.commit('setProfile', this.profile)

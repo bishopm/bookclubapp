@@ -32,7 +32,7 @@ export default {
       // this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
+    this.$axios.get(this.$store.state.hostname + '/books/alltags')
       .then((response) => {
         this.genres = response.data
         // this.$q.loading.hide()

@@ -31,6 +31,10 @@
           <q-item-side icon="book" />
           <q-item-main label="Books" sublabel="view all books" />
         </q-item>
+        <q-item to="/wishlist">
+          <q-item-side icon="favorite" />
+          <q-item-main label="Wishlist" sublabel="view wishlist" />
+        </q-item>
         <q-item to="/genres">
           <q-item-side icon="label" />
           <q-item-main label="Genres" sublabel="view all genres" />
@@ -43,9 +47,9 @@
           <q-item-side icon="add" />
           <q-item-main label="New book" sublabel="enter new book details" />
         </q-item>
-        <q-item to="/logout">
-          <q-item-side icon="close" />
-          <q-item-main label="Log out" sublabel="log out of the app" />
+        <q-item :to="{ name: 'logout' }">
+          <q-item-side icon="close"/>
+          <q-item-main label="Logout" sublabel="log out of the app" />
         </q-item>
       </q-list>
     </q-layout-drawer>

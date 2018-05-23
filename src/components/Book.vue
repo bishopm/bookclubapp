@@ -23,7 +23,7 @@
       <q-btn class="q-mt-md" v-if="book.status.user.id != profile.id" color="primary">I have the book now</q-btn>
       <q-btn @click="returnbook" class="q-mt-lg" v-else color="primary">Return this book now</q-btn>
     </p>
-    <p v-else>
+    <p v-else-if="book.owned">
       <q-btn class="q-mt-md" @click="borrow" color="secondary">Borrow this book now</q-btn>
     </p>
     <p class="caption">Comments</p>
@@ -50,7 +50,7 @@
 export default {
   data () {
     return {
-      book: '',
+      book: {},
       profile: {},
       today: '',
       comments: [],
@@ -60,25 +60,27 @@ export default {
   },
   methods: {
     addComment () {
-      this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/addcomment',
-        {
-          user_id: this.profile.id,
-          book_id: this.book.id,
-          comment: this.newcomment,
-          rating: this.newrating
-        })
-        .then(response => {
-          this.refreshdata()
-          this.newcomment = ''
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      if ((this.comment) || (this.rating)) {
+        this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
+        this.$axios.post(this.$store.state.hostname + '/books/addcomment',
+          {
+            user_id: this.profile.id,
+            book_id: this.book.id,
+            comment: this.newcomment,
+            rating: this.newrating
+          })
+          .then(response => {
+            this.refreshdata()
+            this.newcomment = ''
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      }
     },
     deletecomment (id) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/deletecomment/' + id)
+      this.$axios.post(this.$store.state.hostname + '/books/deletecomment/' + id)
         .then((response) => {
           this.refreshdata()
         })
@@ -88,7 +90,7 @@ export default {
     },
     borrow () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/add',
+      this.$axios.post(this.$store.state.hostname + '/loans/add',
         {
           loandate: this.today,
           user_id: this.profile.id,
@@ -106,7 +108,7 @@ export default {
     },
     returnbook () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/loans/update',
+      this.$axios.post(this.$store.state.hostname + '/loans/update',
         {
           returndate: this.today,
           id: this.book.status.id
@@ -122,7 +124,7 @@ export default {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
       this.today = new Date().toISOString().substr(0, 10)
       this.profile = this.$store.state.profile
-      this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id + '/' + this.profile.id)
+      this.$axios.get(this.$store.state.hostname + '/books/' + this.$route.params.id + '/' + this.profile.id)
         .then((response) => {
           this.book = response.data
           this.comments = this.book.comments

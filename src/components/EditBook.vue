@@ -18,6 +18,10 @@
     <div class="q-pa-sm">
       <q-input v-model="book.description" type="textarea" float-label="Description" :max-height="100" :min-rows="5" />
     </div>
+    <div class="text-center q-pa-sm">
+      <q-btn-toggle v-model="book.owned" toggle-color="primary"
+      :options="ownedOptions"/>
+    </div>
     <div class="q-pa-sm" v-if="genreOptions">
       <label>Genre/s</label>
       <multiselect v-model="genres" tag-placeholder="Add this as new genre" placeholder="Search or add a tag" label="name" track-by="code" :options="genreOptions" :multiple="true" :taggable="true" @tag="addTag"></multiselect>
@@ -34,11 +38,15 @@ import Multiselect from 'vue-multiselect'
 export default {
   data () {
     return {
-      book: {},
+      book: {'owned': 1},
       authorOptions: [],
       btn_disabled: false,
       genres: [],
       genreOptions: [],
+      ownedOptions: [
+        {label: 'We have this book', value: 1},
+        {label: 'Wish list', value: 0}
+      ],
       btn_msg: 'OK',
       authors: []
     }
@@ -49,7 +57,7 @@ export default {
       // this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
+    this.$axios.get(this.$store.state.hostname + '/authors')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -65,7 +73,7 @@ export default {
         // this.$q.loading.hide()
       })
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/' + this.$route.params.id)
+    this.$axios.get(this.$store.state.hostname + '/books/' + this.$route.params.id)
       .then((response) => {
         this.book = response.data
         for (var ukey in this.book.tags) {
@@ -87,7 +95,7 @@ export default {
         console.log(error)
       })
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/books/alltags')
+    this.$axios.get(this.$store.state.hostname + '/books/alltags')
       .then((response) => {
         for (var ukey in response.data) {
           var newitem = {
@@ -118,14 +126,15 @@ export default {
     },
     updateBook (action) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/books/' + action + '/' + this.book.id,
+      this.$axios.post(this.$store.state.hostname + '/books/' + action + '/' + this.book.id,
         {
           title: this.book.title,
           isbn: this.book.isbn,
           image: this.book.image,
           authors: this.authors,
           description: this.book.description,
-          genres: this.genres
+          genres: this.genres,
+          owned: this.book.owned
         })
         .then(response => {
           if (response.data !== 'deleted') {

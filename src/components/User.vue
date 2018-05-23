@@ -8,6 +8,12 @@
           <q-item-main>{{loan.book.title}} <small>(borrowed on {{loan.loandate}})</small></q-item-main>
         </q-item>
       </q-list>
+      <q-list no-border class="q-mt-lg">
+        <q-list-header>History</q-list-header>
+        <q-item v-for="hloan in user.loans" :key="hloan.id" v-if="hloan.returndate!==null" :to="'/books/' + hloan.book.id">
+          <q-item-main>{{hloan.book.title}} <small>(returned on {{hloan.returndate}})</small></q-item-main>
+        </q-item>
+      </q-list>
     </div>
     <div v-if="!authorised" class="q-pa-lg">
       <q-btn @click="updateuser('authorise')" class="q-mt-lg" color="primary">Authorise this user</q-btn>
@@ -27,7 +33,7 @@ export default {
   methods: {
     refreshdata () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.get('https://bishop.net.za/bookclub/api/public/users/' + this.$route.params.id)
+      this.$axios.get(this.$store.state.hostname + '/users/' + this.$route.params.id)
         .then((response) => {
           this.user = response.data
           this.authorised = this.user.authorised
@@ -38,7 +44,7 @@ export default {
     },
     updateuser (action) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/users/authorise/' + this.user.id,
+      this.$axios.post(this.$store.state.hostname + '/users/authorise/' + this.user.id,
         {
           action: action
         })

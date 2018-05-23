@@ -21,4 +21,17 @@ const Router = new VueRouter({
   routes
 })
 
+Router.beforeEach((to, from, next) => {
+  if (to.meta.auth) {
+    const authUser = JSON.parse(localStorage.getItem('BC_profile'))
+    if (authUser && authUser.token && authUser.authorised) {
+      next()
+    } else {
+      Router.push({name: 'login'})
+      return false
+    }
+  }
+  next()
+})
+
 export default Router

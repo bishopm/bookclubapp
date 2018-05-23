@@ -5,11 +5,16 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    profile: JSON.parse(localStorage.getItem('BC_profile'))
+    profile: {},
+    // hostname: 'http://localhost/bookclub/public'
+    hostname: 'https://bishop.net.za/bookclub/api/public'
   },
   mutations: {
     setProfile (state, newprofile) {
       state.profile = newprofile
+    },
+    setLogin (state, newstatus) {
+      state.loginStatus = newstatus
     }
   }
 })

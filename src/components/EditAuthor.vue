@@ -29,7 +29,7 @@ export default {
   },
   mounted () {
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors/' + this.$route.params.id)
+    this.$axios.get(this.$store.state.hostname + '/authors/' + this.$route.params.id)
       .then((response) => {
         this.author = response.data
       })
@@ -52,7 +52,7 @@ export default {
     },
     updateAuthor (action) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/authors/' + action + '/' + this.author.id,
+      this.$axios.post(this.$store.state.hostname + '/authors/' + action + '/' + this.author.id,
         {
           firstname: this.author.firstname,
           surname: this.author.surname

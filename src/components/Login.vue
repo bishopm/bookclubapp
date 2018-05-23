@@ -1,6 +1,6 @@
 <template>
   <div class="layout-padding">
-    <q-tabs position="top" color="primary">
+    <q-tabs v-if="!profile.name" position="top" color="primary">
       <q-tab default slot="title" name="tab-1" icon="lock_open" label="Login"/>
       <q-tab slot="title" name="tab-2" icon="create" label="Register"/>
       <q-tab-pane class="no-border" name="tab-1">
@@ -36,6 +36,9 @@
         </form>
       </q-tab-pane>
     </q-tabs>
+    <p v-else-if="profile.authorised===0" class="text-center">Welcome, {{profile.name}}<br><br>
+      <small>(Your login credentials are correct, but you're still waiting for one of the other members to authorise your profile)</small>
+    </p>
   </div>
 </template>
 
@@ -59,7 +62,7 @@ export default {
   },
   methods: {
     login () {
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/login',
+      this.$axios.post(this.$store.state.hostname + '/login',
         {
           email: this.email,
           password: this.password
@@ -67,13 +70,15 @@ export default {
         .then(response => {
           this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.access_token
           this.profile.token = response.data.access_token
-          this.$axios.post('https://bishop.net.za/bookclub/api/public/me')
+          this.$axios.post(this.$store.state.hostname + '/me')
             .then(response => {
               this.profile.id = response.data.id
               this.profile.name = response.data.name
               this.profile.email = response.data.email
               this.profile.authorised = response.data.authorised
               this.$store.commit('setProfile', this.profile)
+              this.$store.commit('setLogin', 'true')
+              localStorage.setItem('BC_loginStatus', 'true')
               localStorage.setItem('BC_profile', JSON.stringify(this.profile))
               this.$router.push({name: 'home'})
             })
@@ -86,7 +91,7 @@ export default {
         })
     },
     register () {
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/users/register',
+      this.$axios.post(this.$store.state.hostname + '/users/register',
         {
           email: this.newemail,
           password: this.newpassword,

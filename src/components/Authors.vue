@@ -30,7 +30,7 @@ export default {
     },
     searchdb () {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-      this.$axios.post('https://bishop.net.za/bookclub/api/public/authors/search',
+      this.$axios.post(this.$store.state.hostname + '/authors/search',
         {
           search: this.search
         })
@@ -48,7 +48,7 @@ export default {
       // this.$q.loading.show()
     }
     this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
-    this.$axios.get('https://bishop.net.za/bookclub/api/public/authors')
+    this.$axios.get(this.$store.state.hostname + '/authors')
       .then((response) => {
         this.authors = response.data
         // this.$q.loading.hide()

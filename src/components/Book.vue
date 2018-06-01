@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     addComment () {
-      if ((this.comment) || (this.rating)) {
+      if ((this.newcomment) || (this.newrating)) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
         this.$axios.post(this.$store.state.hostname + '/books/addcomment',
           {

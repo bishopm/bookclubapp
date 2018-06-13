@@ -2,8 +2,9 @@
   <q-list>
     <p class="caption text-center">All members</p>
     <q-item v-if="users" v-for="user in users" :key="user.id" :to="'/users/' + user.id">
-      <q-item-main>
-        <b>{{user.name}}</b>&nbsp;<small>{{user.email}}</small><br>
+      <q-item-main class="text-center">
+        <b>{{user.name}}</b><br>
+        <small v-if="user.comments.length">{{user.comments.length}} comments<br></small>
         <small v-if="user.authorised==0">New user - click to authorise</small>
       </q-item-main>
     </q-item>

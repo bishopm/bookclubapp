@@ -16,7 +16,6 @@ module.exports = function (ctx) {
     ],
     supportIE: false,
     build: {
-      publicPath: '/bookclub/',
       scopeHoisting: true,
       vueRouterMode: 'hash',
       // vueCompiler: true,

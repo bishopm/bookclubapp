@@ -14,6 +14,12 @@
           <q-item-main>{{hloan.book.title}} <small>(returned on {{hloan.returndate}})</small></q-item-main>
         </q-item>
       </q-list>
+      <q-list no-border class="q-mt-lg">
+        <q-list-header>Comments</q-list-header>
+        <q-item v-for="comment in user.comments" :key="comment.id" :to="'/books/' + comment.commentable.id">
+          <q-item-main>{{comment.commentable.title}} <small v-if="comment.rate">{{comment.rate}}/5</small></q-item-main>
+        </q-item>
+      </q-list>
     </div>
     <div v-if="!authorised" class="q-pa-lg">
       <q-btn @click="updateuser('authorise')" class="q-mt-lg" color="primary">Authorise this user</q-btn>

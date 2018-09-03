@@ -9,8 +9,14 @@ register(process.env.SERVICE_WORKER_FILE, {
   ready () {
     console.log('App is being served from cache by a service worker.')
   },
+  registered (registration) { // registration -> a ServiceWorkerRegistration instance
+    console.log('Service worker has been registered.')
+  },
   cached (registration) { // registration -> a ServiceWorkerRegistration instance
     console.log('Content has been cached for offline use.')
+  },
+  updatefound (registration) { // registration -> a ServiceWorkerRegistration instance
+    console.log('New content is downloading.')
   },
   updated (registration) { // registration -> a ServiceWorkerRegistration instance
     console.log('New content is available; please refresh.')

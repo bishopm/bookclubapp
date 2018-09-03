@@ -4,7 +4,7 @@
       <p class="caption text-center">All comments</p>
       <q-item v-if="comments" v-for="comment in comments" :key="comment.id" :to="'/books/' + comment.commentable.id">
         <q-item-main>
-          <b>{{comment.commented.name}}</b> commented on <i>{{comment.commentable.title}}</i> on {{comment.created_at.slice(0,10)}}
+          <b v-if="comment.commented">{{comment.commented.firstname}}</b> commented on <i>{{comment.commentable.title}}</i> on {{comment.created_at.slice(0,10)}}
         </q-item-main>
         <q-item-side class="text-right">
         </q-item-side>

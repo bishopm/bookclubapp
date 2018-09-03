@@ -5,19 +5,24 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'axios',
-      'quagga'
+      'quagga',
+      'firebase',
+      'vuelidate'
     ],
     css: [
       'app.styl'
     ],
     extras: [
       ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons'
+      'material-icons' // optional, you are not bound to it
+      // 'ionicons',
+      // 'mdi',
+      // 'fontawesome'
     ],
     supportIE: false,
     build: {
       scopeHoisting: true,
-      vueRouterMode: 'hash',
+      // vueRouterMode: 'history',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
@@ -82,19 +87,21 @@ module.exports = function (ctx) {
       // i18n: 'de' // Quasar language
     },
     // animations: 'all' --- includes all animations
-    animations: [
-    ],
+    animations: [],
+    ssr: {
+      pwa: false
+    },
     pwa: {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {},
       manifest: {
-        name: 'Ballito Bookclub',
-        short_name: 'Bookclub',
+        // name: 'Quasar App',
+        // short_name: 'Quasar-PWA',
         // description: 'Best PWA App in town!',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#0b3c5d',
+        theme_color: '#027be3',
         icons: [
           {
             'src': 'statics/icons/icon-128x128.png',

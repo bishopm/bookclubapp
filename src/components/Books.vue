@@ -9,7 +9,7 @@
           <small><span v-for="author in book.authors" :key="author.id"><i>{{author.firstname}} {{author.surname}}</i><br></span></small>
         </q-item-main>
         <q-item-side class="text-right">
-          <small v-if="book.status">{{book.status.user.name}}</small>
+          <small v-if="book.status"><span v-if="book.status.user">{{book.status.user.firstname}}</span></small>
           <small v-else>Available</small>
           <small v-if="book.avg">
             <br><q-rating readonly :value="book.avg" color="primary"></q-rating>

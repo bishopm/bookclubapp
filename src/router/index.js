@@ -5,33 +5,33 @@ import routes from './routes'
 
 Vue.use(VueRouter)
 
-const Router = new VueRouter({
-  /*
-   * NOTE! Change Vue Router mode from quasar.conf.js -> build -> vueRouterMode
-   *
-   * When going with "history" mode, please also make sure "build.publicPath"
-   * is set to something other than an empty string.
-   * Example: '/' instead of ''
-   */
+/*
+ * If not building with SSR mode, you can
+ * directly export the Router instantiation
+ */
 
-  // Leave as is and change from quasar.conf.js instead!
-  mode: process.env.VUE_ROUTER_MODE,
-  base: process.env.VUE_ROUTER_BASE,
-  scrollBehavior: () => ({ y: 0 }),
-  routes
-})
+export default function (/* { store, ssrContext } */) {
+  const Router = new VueRouter({
+    scrollBehavior: () => ({ y: 0 }),
+    routes,
 
-Router.beforeEach((to, from, next) => {
-  if (to.meta.auth) {
-    const authUser = JSON.parse(localStorage.getItem('BC_profile'))
-    if (authUser && authUser.token && authUser.authorised) {
-      next()
-    } else {
-      Router.push({name: 'login'})
-      return false
+    // Leave these as is and change from quasar.conf.js instead!
+    // quasar.conf.js -> build -> vueRouterMode
+    mode: process.env.VUE_ROUTER_MODE,
+    base: process.env.VUE_ROUTER_BASE
+  })
+
+  Router.beforeEach((to, from, next) => {
+    if (to.meta.auth) {
+      if (localStorage.getItem('BC_VerifiedPhone')) {
+        next()
+      } else {
+        Router.push({name: 'phoneverification'})
+        return false
+      }
     }
-  }
-  next()
-})
+    next()
+  })
 
-export default Router
+  return Router
+}

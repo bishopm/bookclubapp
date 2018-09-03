@@ -19,8 +19,8 @@
     <q-rating v-if="book.avg" readonly :value="book.avg" color="tertiary"></q-rating>
     <p class="q-ma-md text-justify">{{book.description}}</p>
     <p class="q-ma-md" v-if="book.status">
-      {{book.status.user.name}} has this book <small>({{book.status.loandate}} - )</small>
-      <q-btn class="q-mt-md" v-if="book.status.user.id != profile.id" color="primary">I have the book now</q-btn>
+      <span v-if="book.status.user">{{book.status.user.firstname}} has this book <small>({{book.status.loandate}} - )</small>
+      <q-btn class="q-mt-md" v-if="book.status.user.id != profile.id" color="primary">I have the book now</q-btn></span>
       <q-btn @click="returnbook" class="q-mt-lg" v-else color="primary">Return this book now</q-btn>
     </p>
     <p v-else-if="book.owned">
@@ -35,10 +35,10 @@
       <q-item v-for="comment in comments" :key="comment.id">
         <q-item-main>
           <small>
-            <b>{{comment.user.name}}</b> {{comment.created_at.slice(0,10)}}<br>
+            <b><span v-if="comment.user">{{comment.user.firstname}}</span></b> {{comment.created_at.slice(0,10)}}<br>
             <q-rating v-if="comment.rate" readonly :value="comment.rate" color="primary"></q-rating>
             <br>{{comment.comment}}
-            <q-icon @click.native="deletecomment(comment.id)" name="delete" v-if="comment.user.id == profile.id"/><br>
+            <span v-if="comment.user"><q-icon @click.native="deletecomment(comment.id)" name="delete" v-if="comment.user.id == profile.id"/></span><br>
           </small>
         </q-item-main>
       </q-item>

@@ -1,10 +1,10 @@
 
-export default [
+const routes = [
   {
     path: '/',
-    component: () => import('layouts/default'),
+    component: () => import('layouts/MyLayout.vue'),
     children: [
-      { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: true} },
+      { name: 'home', path: '/', component: () => import('components/Home'), meta: {auth: false} },
       { name: 'addbook', path: '/addbook/:isbn?', component: () => import('components/AddBook'), meta: {auth: true} },
       { name: 'author', path: '/authors/:id', component: () => import('components/Author'), meta: {auth: true} },
       { name: 'authors', path: '/authors', component: () => import('components/Authors'), meta: {auth: true} },
@@ -17,14 +17,22 @@ export default [
       { name: 'genres', path: '/genres', component: () => import('components/Genres'), meta: {auth: true} },
       { name: 'login', path: '/login', component: () => import('components/Login'), meta: {auth: false} },
       { name: 'logout', path: '/logout', component: () => import('components/Logout'), meta: {auth: true} },
+      { name: 'phoneverification', path: '/phoneverification', component: () => import('components/Phoneverification'), meta: {auth: false} },
       { name: 'scanner', path: '/scanner', component: () => import('components/Scanner'), meta: {auth: true} },
       { name: 'user', path: '/users/:id', component: () => import('components/User'), meta: {auth: true} },
+      { name: 'userform', path: '/user/:action/:user?', component: () => import('components/Userform'), meta: {auth: true} },
       { name: 'users', path: '/users', component: () => import('components/Users'), meta: {auth: true} },
       { name: 'wishlist', path: '/wishlist', component: () => import('components/Wishlist'), meta: {auth: true} }
     ]
-  },
-  { // Always leave this as last one
-    path: '*',
-    component: () => import('pages/404')
   }
 ]
+
+// Always leave this as last one
+if (process.env.MODE !== 'ssr') {
+  routes.push({
+    path: '*',
+    component: () => import('pages/Error404.vue')
+  })
+}
+
+export default routes

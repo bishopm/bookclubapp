@@ -1,9 +1,10 @@
 <template>
   <q-list>
     <p class="caption text-center">All members</p>
+    <q-btn round color="primary" @click="addUser" class="fixed" icon="add" style="right: 18px; top: 68px" />
     <q-item v-if="users" v-for="user in users" :key="user.id" :to="'/users/' + user.id">
       <q-item-main class="text-center">
-        <b>{{user.name}}</b><br>
+        <b>{{user.firstname}} {{user.surname}}</b><br>
         <small v-if="user.comments.length">{{user.comments.length}} comments<br></small>
         <small v-if="user.authorised==0">New user - click to authorise</small>
       </q-item-main>
@@ -27,6 +28,9 @@ export default {
       return {
         'cacheKey': 'BC_Users'
       }
+    },
+    addUser () {
+      this.$router.push({name: 'userform', params: { action: 'add' }})
     }
   },
   mounted () {

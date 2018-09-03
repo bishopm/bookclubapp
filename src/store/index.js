@@ -15,6 +15,9 @@ const store = new Vuex.Store({
     },
     setLogin (state, newstatus) {
       state.loginStatus = newstatus
+    },
+    setToken (state, newtoken) {
+      state.token = newtoken
     }
   }
 })

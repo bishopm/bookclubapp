@@ -1,6 +1,8 @@
 <template>
   <div v-if="user" class="text-center layout-padding">
-    <p class="caption">{{user.name}} <small>{{user.email}}</small></p>
+    <p class="caption">
+      {{user.firstname}} <q-icon class="cursor-pointer" @click.native="editUser" name="edit"></q-icon>
+    </p>
     <div v-if="user.authorised">
       <q-list no-border class="q-mt-lg">
         <q-list-header>Books on loan</q-list-header>
@@ -47,6 +49,9 @@ export default {
         .catch(function (error) {
           console.log(error)
         })
+    },
+    editUser () {
+      this.$router.push({name: 'userform', params: { user: JSON.stringify(this.user), action: 'edit' }})
     },
     updateuser (action) {
       this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token

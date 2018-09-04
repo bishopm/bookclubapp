@@ -1,8 +1,8 @@
 module.exports = {
-  apiKey: 'AIzaSyATsm2WL8gJbhRVGzYIymMbYa78XFvIEPc',
-  authDomain: 'circuitpwa.firebaseapp.com',
-  databaseURL: 'https://circuitpwa.firebaseio.com',
-  projectId: 'circuitpwa',
-  storageBucket: 'circuitpwa.appspot.com',
-  messagingSenderId: '260607597144'
+  apiKey: 'AIzaSyAVHdv3PNyhK6IAzDzjB-DvNC3eYSk_QW8',
+  authDomain: 'bookclub-7109b.firebaseapp.com',
+  databaseURL: 'https://bookclub-7109b.firebaseio.com',
+  projectId: 'bookclub-7109b',
+  storageBucket: 'bookclub-7109b.appspot.com',
+  messagingSenderId: '881821797857'
 }

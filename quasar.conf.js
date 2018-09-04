@@ -95,8 +95,8 @@ module.exports = function (ctx) {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {},
       manifest: {
-        // name: 'Quasar App',
-        // short_name: 'Quasar-PWA',
+        name: 'Ballito Bookclub',
+        short_name: 'Bookclub',
         // description: 'Best PWA App in town!',
         display: 'standalone',
         orientation: 'portrait',

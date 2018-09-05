@@ -8,7 +8,7 @@
           <q-rating v-if="book.avg" readonly :value="book.avg" color="primary"></q-rating>
         </q-item-main>
         <q-item-side>
-          <small v-if="book.status">{{book.status.user.name}}</small>
+          <small v-if="book.status"><span v-if="book.status.user">{{book.status.user.firstname}}</span></small>
           <small v-else-if="book.owned">Available</small>
         </q-item-side>
       </q-item>

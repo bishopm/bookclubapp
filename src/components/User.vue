@@ -1,7 +1,7 @@
 <template>
   <div v-if="user" class="text-center layout-padding">
     <p class="caption">
-      {{user.firstname}} <q-icon class="cursor-pointer" @click.native="editUser" name="edit"></q-icon>
+      {{user.firstname}} {{user.surname}}<q-icon class="cursor-pointer" @click.native="editUser" name="edit"></q-icon>
     </p>
     <div v-if="user.authorised">
       <q-list no-border class="q-mt-lg">

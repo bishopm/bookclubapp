@@ -21,7 +21,7 @@
     <p class="q-ma-md" v-if="book.status">
       <span v-if="book.status.user">{{book.status.user.firstname}} has this book <small>({{book.status.loandate}} - )</small>
       <q-btn class="q-mt-md" v-if="book.status.user.id != profile.id" color="primary">I have the book now</q-btn></span>
-      <q-btn @click="returnbook" class="q-mt-lg" v-else color="primary">Return this book now</q-btn>
+      <q-btn @click="returnbook" class="q-mt-lg" v-if="book.status.user.id === profile.id" color="primary">Return this book now</q-btn>
     </p>
     <p v-else-if="book.owned">
       <q-btn class="q-mt-md" @click="borrow" color="secondary">Borrow this book now</q-btn>
@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     addComment () {
-      if ((this.newcomment) || (this.newrating)) {
+      if (this.newrating) {
         this.$axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.profile.token
         this.$axios.post(this.$store.state.hostname + '/books/addcomment',
           {
@@ -76,6 +76,8 @@ export default {
           .catch(function (error) {
             console.log(error)
           })
+      } else {
+        this.$q.notify('Please add a rating with your comment')
       }
     },
     deletecomment (id) {
